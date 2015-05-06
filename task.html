@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<head>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script>
+	var taskCount=0;
+	function updateTime()
+	{	
+		var array=document.getElementsByClassName('check');
+		var count=0;
+		while (array[count]!=null)
+		{	//alert(array[count].innerHTML);
+			var temp=array[count].getElementsByTagName('td')[1];
+			//var temp=array[count].getElementsById("timer");
+			var counter=parseInt(temp.innerHTML)+1;
+			temp.innerHTML=counter;
+			//alert(array[count].innerHTML);
+			var display=array[count].getElementsByTagName('td')[2];
+			var content="";
+			if (parseInt(counter / 60) >0)
+			{
+				content+= (parseInt(counter / 60)).toString() +" min "
+			}
+			content+= (parseInt(counter % 60)).toString() +" sec";
+			display.innerHTML=content;
+			count++;
+		}
+	}
+	setInterval(updateTime,1000);
+	
+	function pause(id)
+	{
+		if (document.getElementById(id).className=="check")
+		{
+			document.getElementById(id).className="pause";
+			$("#"+id +" #pause"+id).attr("src","source/resume.jpg");
+		}
+		else if (document.getElementById(id).className=="pause")
+		{
+			document.getElementById(id).className="check";
+			$("#"+id +" #pause"+id).attr("src","source/pause.jpg");
+		}
+	}
+	
+	function finish(id)
+	{
+		document.getElementById(id).className="finish"+id;
+		document.getElementById("pause"+id).remove();
+		document.getElementById("finish"+id).remove();
+		var temp=document.getElementsByClassName("finish"+id)[0].getElementsByTagName('td')[0];
+		temp.innerHTML="<img src=\"source/tick.jpg\" width=\"25\" >"+temp.innerHTML;
+		$("#" + id+" #timeDisplay").css("width","70%");
+		$("#"+id).parent().css("background-color","#F5F5F5");
+	}
+	
+	function newTask()
+	{	
+		taskCount++;
+		var tag=document.getElementById("taskName");
+		var inputText=tag.value;
+		
+		
+		if ((inputText=="") || (inputText=="Enter task name"))
+		{
+			
+		}
+		else
+		{
+			if (taskCount==1)
+			{
+				document.getElementById('front').id="back";
+				$("#taskName").css("background-color","White");
+				$("#taskName").css("color","#E0E0E0");
+			}
+			tag.value="Enter task name";
+			var temp=document.createElement("DIV");
+			var tempId="task"+taskCount;
+			var content="<div class=\"taskItem\">";
+			content+="<table  style=\"height:80%;\" class=\"check\" id=\""+tempId+"\"><tr>";
+			content+="<td style=\"width:20%;\">"+inputText+"</td>";
+			
+			content+="<td  id='timer'>0</td><td style=\"width:40%;text-align: right;\" id='timeDisplay'>0 sec</td>";
+			content+="<td style=\"width:15%;\"><img class=\"img\" id=\"pause"+tempId+"\" onclick=\"pause('"+tempId+"')\" src=\"source/pause.jpg\" ></td>";
+			content+="<td style=\"width:15%;\"><img class=\"img\" id=\"finish"+tempId+"\" onclick=\"finish('"+tempId+"')\" src=\"source/finish.jpg\" ></td>";
+			
+			content+="</tr></table></div>";
+			temp.innerHTML=content;
+			
+			
+			document.getElementById("taskList").appendChild(temp);
+		}
+	}
+	</script>
+	
+	
+</head>
+<body id="front">
+<div id="header">
+	<img id="logoPic" src="source/logo.jpg" >
+</div>
+<div id="container">
+	<div id="addTask">
+	<input type="text" style="background-color:#64B5F6; color:White;" id="taskName" name="issue" value="Enter task name" onfocus="if (this.value=='Enter task name'){this.value='';}">
+	<img id="enterImg" onclick="newTask()" src="source/enter.jpg" >
+	
+	 
+	</div>
+</div>
+
+<div id="taskList">
+</div>
+<p id="tipText">This is a simple tool to track tasks that</br>last for how long, be efficient!</p>
+
+
+</body>
+</html>
